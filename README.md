@@ -52,7 +52,7 @@ Demo password for every seeded account: `agroinspo-demo-2026`.
 | `NODE_ENV` | `production` |
 | `APP_URL` | `https://agroinspo-f.vercel.app` |
 | `ALLOWED_ORIGINS` | `https://agroinspo-f.vercel.app` |
-| `API_PUBLIC_URL` | `https://agroinspo-api.onrender.com` |
+| `API_PUBLIC_URL` | `https://agroinspo-b.onrender.com` |
 | `DATABASE_FILE` | `./data/agroinspo.db` |
 | `UPLOAD_DIR` | `./data/uploads` |
 | `SEED_PASSWORD` | `agroinspo-demo-2026` |

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: agroinspo-api
+    name: agroinspo-b
     runtime: node
     plan: free
     branch: main
@@ -15,7 +15,7 @@ services:
       - key: ALLOWED_ORIGINS
         value: https://agroinspo-f.vercel.app
       - key: API_PUBLIC_URL
-        value: https://agroinspo-api.onrender.com
+        value: https://agroinspo-b.onrender.com
       - key: DATABASE_FILE
         value: ./data/agroinspo.db
       - key: UPLOAD_DIR
