@@ -1,0 +1,16 @@
+{
+  "name": "agro-inspo-backend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Agro Inspo API: zero-dependency Node server with SQLite (node:sqlite).",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/index.js",
+    "dev": "node --watch --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/index.js",
+    "seed": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning scripts/seed.js",
+    "test": "node --disable-warning=ExperimentalWarning --test \"test/*.test.js\""
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}
