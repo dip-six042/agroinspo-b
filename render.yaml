@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: agroinspo-api
+    runtime: node
+    plan: free
+    branch: main
+    buildCommand: npm install
+    startCommand: npm run seed && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_URL
+        value: https://agroinspo-f.vercel.app
+      - key: ALLOWED_ORIGINS
+        value: https://agroinspo-f.vercel.app
+      - key: API_PUBLIC_URL
+        value: https://agroinspo-api.onrender.com
+      - key: DATABASE_FILE
+        value: ./data/agroinspo.db
+      - key: UPLOAD_DIR
+        value: ./data/uploads
+      - key: SEED_PASSWORD
+        value: agroinspo-demo-2026
+      - key: ALLOW_SEED
+        value: "1"
+      - key: KORA_MODE
+        value: dummy
+      - key: VIDEO_PROVIDER
+        value: dummy

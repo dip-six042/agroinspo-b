@@ -42,3 +42,22 @@ Demo password for every seeded account: `agroinspo-demo-2026`.
 ## What stays local
 
 `.env`, `data/` (the SQLite database and private uploads), and `node_modules/` are git-ignored. Copy `.env.example` when setting up a new machine. Set `NODE_ENV=production` before deploying so development verification links and `/api/dev/outbox` stay off.
+
+## Host on Render
+
+`render.yaml` is the production environment. Connect this repo as a Blueprint, or create a web service and paste the same values. The local `.env` stays on localhost and is not what Render runs.
+
+| Variable | Production value |
+| --- | --- |
+| `NODE_ENV` | `production` |
+| `APP_URL` | `https://agroinspo-f.vercel.app` |
+| `ALLOWED_ORIGINS` | `https://agroinspo-f.vercel.app` |
+| `API_PUBLIC_URL` | `https://agroinspo-api.onrender.com` |
+| `DATABASE_FILE` | `./data/agroinspo.db` |
+| `UPLOAD_DIR` | `./data/uploads` |
+| `SEED_PASSWORD` | `agroinspo-demo-2026` |
+| `ALLOW_SEED` | `1` |
+| `KORA_MODE` | `dummy` |
+| `VIDEO_PROVIDER` | `dummy` |
+
+Start command: `npm run seed && npm start`. Render sets `PORT`. The free disk is wiped on redeploy, and the seed puts the demo accounts back. If the Vercel URL is not `https://agroinspo-f.vercel.app`, change `APP_URL` and `ALLOWED_ORIGINS` to that origin with no trailing slash and no spaces.
