@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Agro Inspo API: zero-dependency Node server with SQLite (node:sqlite).",
   "scripts": {
+    "build": "node --check src/index.js",
     "start": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/index.js",
     "dev": "node --watch --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/index.js",
     "seed": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning scripts/seed.js",
