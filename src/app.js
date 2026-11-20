@@ -17,6 +17,7 @@ import { createVideoProvider } from './video.js';
 import { registerPayments } from './routes/payments.js';
 import { registerJobs } from './routes/jobs.js';
 import { registerEvents } from './routes/events.js';
+import { registerInvestment } from './routes/investment.js';
 import { registerConsultations } from './routes/consultations.js';
 import { registerFinance } from './routes/finance.js';
 import { registerBooks } from './routes/books.js';
@@ -938,6 +939,7 @@ export function createApp({ db, mailer, payments, video, config = {} }) {
   registerPayments(kit);
   registerJobs(kit);
   registerEvents(kit);
+  registerInvestment(kit);
   registerConsultations(kit);
   registerFinance(kit);
   registerBooks(kit);

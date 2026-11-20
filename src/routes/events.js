@@ -102,7 +102,7 @@ export function registerEvents(kit) {
       where.push('e.host_id = :viewer');
     }
     if (ctx.query.get('topic')) (where.push('e.topic = :topic'), (params.topic = oneOf(ctx.query.get('topic'), TOPICS, 'Topic')));
-    if (ctx.query.get('q')) (where.push('(e.title LIKE :q OR e.description LIKE :q OR e.speakers LIKE :q)'), (params.q = `%${ctx.query.get('q').slice(0, 80).replace(/[%_]/g, '')}%`));
+    if (ctx.query.get('q')) (where.push('(e.title LIKE :q OR e.description LIKE :q OR e.speakers LIKE :q OR u.name LIKE :q)'), (params.q = `%${ctx.query.get('q').slice(0, 80).replace(/[%_]/g, '')}%`));
     const order = when === 'upcoming' ? "(e.status = 'live') DESC, e.starts_at ASC" : 'e.starts_at DESC';
     const rows = db.all(`${SELECT_EVENT} WHERE ${where.join(' AND ') || '1=1'} ORDER BY ${order} LIMIT 100`, params);
     return { events: rows.map((e) => view(e, ctx.user)) };
