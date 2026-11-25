@@ -25,6 +25,8 @@ services:
         value: /var/data/agroinspo.db
       - key: UPLOAD_DIR
         value: /var/data/uploads
+      - key: ALLOW_PAYOUT_SELF_APPROVAL
+        value: "1"
       - key: KORA_MODE
         value: dummy
       - key: VIDEO_PROVIDER

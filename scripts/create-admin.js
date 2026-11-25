@@ -1,5 +1,5 @@
 // Creates (or promotes) a platform admin. Production has no demo accounts, so run this once per admin.
-// Payout batches need two different admins to approve (maker-checker), so create at least two.
+// One admin is enough: production sets ALLOW_PAYOUT_SELF_APPROVAL=1, so that admin can approve payout batches.
 //
 //   ADMIN_EMAIL=you@example.com ADMIN_NAME="Your Name" ADMIN_PASSWORD='a long password' npm run create-admin
 //

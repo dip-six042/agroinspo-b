@@ -58,7 +58,7 @@ export const MIN_PAYOUT_NGN = pct('MIN_PAYOUT_NGN', 5000);
 export const CLIENT_FREE_CANCEL_HOURS = pct('CLIENT_FREE_CANCEL_HOURS', 24);
 export const BOOK_REFUND_DAYS = pct('BOOK_REFUND_DAYS', 7);
 export const SLOT_HOLD_MINUTES = 30;   // a slot is held this long while the client pays
-export const ALLOW_SELF_APPROVAL = process.env.ALLOW_PAYOUT_SELF_APPROVAL === '1'; // dev only; maker-checker otherwise
+export const ALLOW_SELF_APPROVAL = process.env.ALLOW_PAYOUT_SELF_APPROVAL === '1'; // '1' lets one admin prepare and approve payouts; otherwise a second admin must approve (maker-checker)
 
 export const MAX_BOOK_BYTES = 50 * 1024 * 1024;
 export const BOOK_TYPES = { 'application/pdf': '.pdf', 'application/epub+zip': '.epub' };
