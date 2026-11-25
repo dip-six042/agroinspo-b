@@ -2,10 +2,15 @@ services:
   - type: web
     name: agroinspo-b
     runtime: node
-    plan: free
+    # Starter (paid) is needed for a persistent disk; the free plan wipes data on every deploy/restart.
+    plan: starter
     branch: main
     buildCommand: npm install && npm run build
-    startCommand: npm run seed && npm start
+    startCommand: npm start
+    disk:
+      name: agroinspo-data
+      mountPath: /var/data
+      sizeGB: 1
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
@@ -17,14 +22,18 @@ services:
       - key: API_PUBLIC_URL
         value: https://agroinspo-b.onrender.com
       - key: DATABASE_FILE
-        value: ./data/agroinspo.db
+        value: /var/data/agroinspo.db
       - key: UPLOAD_DIR
-        value: ./data/uploads
-      - key: SEED_PASSWORD
-        value: agroinspo-demo-2026
-      - key: ALLOW_SEED
-        value: "1"
+        value: /var/data/uploads
       - key: KORA_MODE
         value: dummy
       - key: VIDEO_PROVIDER
         value: dummy
+      - key: COMMISSION_CONSULTATION_PCT
+        value: "10"
+      - key: COMMISSION_EVENT_PCT
+        value: "10"
+      - key: COMMISSION_BOOK_PCT
+        value: "10"
+      - key: COMMISSION_SPONSORSHIP_PCT
+        value: "10"

@@ -7,7 +7,7 @@ const SECTORS = [
   'agribusiness', 'technology', 'farm-management'
 ];
 const DEFAULT_ANNOUNCEMENT =
-  'Interested in future agricultural investment opportunities across Nigeria and Africa? Agro Inspo is preparing an ecosystem intended to connect investors with agricultural businesses and opportunities. Join the waiting list to receive updates about the portal’s development and launch.';
+  'Interested in future agricultural investment opportunities around the world? Agro Inspo is preparing an ecosystem intended to connect investors with agricultural businesses and opportunities. Join the waiting list to receive updates about the portal’s development and launch.';
 
 export function registerInvestment(kit) {
   const { db, route, audit, mailer, HttpError, bad, str, oneOf, cfg } = kit;

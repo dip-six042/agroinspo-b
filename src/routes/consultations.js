@@ -1,6 +1,7 @@
 // Specialist directory, services, availability, consultation bookings, calls and reviews (PRD §22.4, §27).
 import { newId, now } from '../security.js';
 import { CLIENT_FREE_CANCEL_HOURS, COMMISSION, SLOT_HOLD_MINUTES } from '../config.js';
+import { COUNTRIES } from '../places.js';
 
 const MIN = 60_000;
 const HOUR = 60 * MIN;
@@ -17,7 +18,7 @@ export function registerConsultations(kit) {
 
   /* ---------- directory ---------- */
   const SELECT_SPECIALIST = `
-    SELECT u.id, u.name, u.title, u.location, u.bio, u.avatar_url, p.*,
+    SELECT u.id, u.name, u.title, u.location, u.country, u.bio, u.avatar_url, p.*,
       (SELECT ROUND(AVG(r.rating), 2) FROM reviews r WHERE r.specialist_id = u.id AND r.status = 'published') AS rating,
       (SELECT COUNT(*) FROM reviews r WHERE r.specialist_id = u.id AND r.status = 'published') AS review_count,
       (SELECT MIN(price_ngn) FROM consultation_services s WHERE s.specialist_id = u.id AND s.active = 1) AS from_price,
@@ -32,6 +33,7 @@ export function registerConsultations(kit) {
     title: r.title,
     headline: r.headline,
     location: r.location,
+    country: r.country || '',
     bio: r.bio,
     avatarUrl: r.avatar_url,
     specialties: parseJson(r.specialties, []),
@@ -54,7 +56,13 @@ export function registerConsultations(kit) {
     const where = [];
     const params = { soon: soon() };
     const q = ctx.query.get('q');
-    if (q) (where.push('(u.name LIKE :q OR p.headline LIKE :q OR p.specialties LIKE :q OR u.location LIKE :q OR p.service_area LIKE :q)'), (params.q = `%${q.slice(0, 60).replace(/[%_]/g, '')}%`));
+    if (q) (where.push('(u.name LIKE :q OR p.headline LIKE :q OR p.specialties LIKE :q OR u.location LIKE :q OR u.country LIKE :q OR p.service_area LIKE :q)'), (params.q = `%${q.slice(0, 60).replace(/[%_]/g, '')}%`));
+    if (ctx.query.get('country')) {
+      const country = oneOf(ctx.query.get('country'), COUNTRIES, 'Country');
+      where.push('(u.country = :country OR u.location LIKE :countryLike)');
+      params.country = country;
+      params.countryLike = `%${country}%`;
+    }
     if (ctx.query.get('topic'))
       (where.push('EXISTS (SELECT 1 FROM consultation_services s WHERE s.specialist_id = u.id AND s.active = 1 AND s.topic = :topic)'), (params.topic = oneOf(ctx.query.get('topic'), TOPICS, 'Topic')));
     if (ctx.query.get('verified') === '1') where.push("p.credential_status = 'verified'");

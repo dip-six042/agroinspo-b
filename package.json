@@ -9,7 +9,8 @@
     "start": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/index.js",
     "dev": "node --watch --env-file-if-exists=.env --disable-warning=ExperimentalWarning src/index.js",
     "seed": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning scripts/seed.js",
-    "test": "node --disable-warning=ExperimentalWarning --test \"test/*.test.js\""
+    "test": "node --disable-warning=ExperimentalWarning --test \"test/*.test.js\"",
+    "create-admin": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning scripts/create-admin.js"
   },
   "engines": {
     "node": ">=22.13"

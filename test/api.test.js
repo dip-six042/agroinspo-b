@@ -92,6 +92,20 @@ test('unverified users cannot post; verified users can', async () => {
   assert.equal((await c('POST', '/api/auth/verify-email', { token: tokenFrom(r.devVerifyLink) })).status, 400);
 });
 
+test('a typed city or state places the profile in a country; ambiguous places are left for the member to pick', async () => {
+  const { c } = await signupVerified('Amaka', 'amaka@test.ng', 'farmer');
+  assert.equal((await c('PATCH', '/api/me', { location: 'Victoria Island, Lagos' })).user.country, 'Nigeria');
+  assert.equal((await c('PATCH', '/api/me', { location: 'Nakuru' })).user.country, 'Kenya');
+  // Punjab is in India and Pakistan: the country stays as it was until the member picks one.
+  assert.equal((await c('PATCH', '/api/me', { location: 'Punjab' })).user.country, 'Kenya');
+  assert.equal((await c('PATCH', '/api/me', { location: 'Punjab', country: 'Pakistan' })).user.country, 'Pakistan');
+  assert.equal((await c('PATCH', '/api/me', { country: 'Atlantis' })).status, 400);
+  // Country personalises discovery, never restricts it.
+  const all = await c('GET', '/api/specialists');
+  assert.equal(all.status, 200);
+  assert.ok((await c('GET', '/api/meta')).countries.includes('Brazil'));
+});
+
 test('onboarding saves interests and follows them; feed "following" view uses them', async () => {
   const { c } = await signupVerified('Dayo', 'dayo@test.ng', 'enthusiast');
   const bad = await c('PATCH', '/api/me', { interests: ['not-a-topic'] });
