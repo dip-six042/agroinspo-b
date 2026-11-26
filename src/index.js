@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { openDatabase } from './db.js';
 import { createMailer } from './mailer.js';
 import { createApp } from './app.js';
+import { upsertAdmin } from './admin.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 // The built site (frontend/dist). Set STATIC_DIR when it's deployed elsewhere, or empty to serve the API only.
@@ -15,6 +16,17 @@ const DIST = process.env.STATIC_DIR || join(here, '..', '..', 'frontend', 'dist'
 const PORT = Number(process.env.PORT || 8787);
 
 const db = openDatabase();
+
+// First admin from the environment (ADMIN_EMAIL / ADMIN_PASSWORD), for hosts without a shell such as
+// Render's free plan. Only creates the account when it's missing, so a password changed in the app is kept.
+if (process.env.ADMIN_EMAIL) {
+  try {
+    if (upsertAdmin(db, { email: process.env.ADMIN_EMAIL, name: process.env.ADMIN_NAME, password: process.env.ADMIN_PASSWORD, reset: false }) === 'created')
+      console.log(`Created admin ${process.env.ADMIN_EMAIL.trim().toLowerCase()} from ADMIN_EMAIL.`);
+  } catch (e) {
+    console.error(`Admin not created: ${e.message}`);
+  }
+}
 const api = createApp({ db, mailer: createMailer(db) });
 
 // Reminders, listing expiry and other scheduled work.
