@@ -203,7 +203,7 @@ test('event sponsorship: packages, request, host accepts, sponsor pays, host ear
     name: 'Gold sponsor', priceNgn: 100000, benefits: 'Logo on the event page and stage, two verbal mentions, a 5-minute product talk.',
     deliverables: ['Logo on event page', 'Two verbal mentions', '5-minute product talk'], speakingSlot: true, exclusive: true
   })).package;
-  assert.equal(pkg.hostNetNgn, 85000);
+  assert.equal(pkg.hostNetNgn, 90000);
   assert.equal((await biz2.c('POST', `/api/sponsorship-packages/${pkg.id}/request`, { displayName: 'Agro Two' })).status, 403, 'unverified business');
   const req = (await biz.c('POST', `/api/sponsorship-packages/${pkg.id}/request`, { displayName: 'Green Valley Inputs', link: 'https://greenvalley.example', message: 'We’d like to show our seed range.' })).sponsorship;
   assert.equal((await biz.c('POST', `/api/sponsorships/${req.id}/checkout`)).status, 400, 'must be accepted first');
@@ -217,7 +217,7 @@ test('event sponsorship: packages, request, host accepts, sponsor pays, host ear
   assert.equal(pub.packages[0].available, 0, 'exclusive package taken');
   // Host earning: pending until the hold period after the event ends.
   const entries = db.all("SELECT * FROM ledger_entries WHERE source_type='sponsorship' AND source_id=? AND account_id=?", req.id, host.id);
-  assert.equal(entries.reduce((s, e) => s + e.amount_ngn, 0), 85000);
+  assert.equal(entries.reduce((s, e) => s + e.amount_ngn, 0), 90000);
   assert.ok(entries.every((e) => e.available_at > new Date(Date.now() + 10 * 86400000).toISOString()));
 
   const d = await host.c('POST', `/api/sponsorships/${req.id}/deliverables`, { index: 0, evidence: 'Logo live on the event page since 3 Nov.' });

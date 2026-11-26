@@ -42,10 +42,10 @@ export const CV_TYPES = {
 /* ---------- Phase 3: money rules. PLACEHOLDERS pending product-owner approval (PRD §28.2, §37). ---------- */
 const pct = (v, d) => Number(process.env[v] ?? d);
 export const COMMISSION = {
-  consultation: pct('COMMISSION_CONSULTATION_PCT', 15) / 100,
-  event_ticket: pct('COMMISSION_EVENT_PCT', 15) / 100,
-  book_purchase: pct('COMMISSION_BOOK_PCT', 20) / 100,
-  sponsorship: pct('COMMISSION_SPONSORSHIP_PCT', 15) / 100
+  consultation: pct('COMMISSION_CONSULTATION_PCT', 10) / 100,
+  event_ticket: pct('COMMISSION_EVENT_PCT', 10) / 100,
+  book_purchase: pct('COMMISSION_BOOK_PCT', 10) / 100,
+  sponsorship: pct('COMMISSION_SPONSORSHIP_PCT', 10) / 100
 };
 // Days after the sale event before earnings become available (dispute/refund windows).
 export const HOLD_DAYS = {
@@ -58,7 +58,7 @@ export const MIN_PAYOUT_NGN = pct('MIN_PAYOUT_NGN', 5000);
 export const CLIENT_FREE_CANCEL_HOURS = pct('CLIENT_FREE_CANCEL_HOURS', 24);
 export const BOOK_REFUND_DAYS = pct('BOOK_REFUND_DAYS', 7);
 export const SLOT_HOLD_MINUTES = 30;   // a slot is held this long while the client pays
-export const ALLOW_SELF_APPROVAL = process.env.ALLOW_PAYOUT_SELF_APPROVAL === '1'; // dev only; maker-checker otherwise
+export const ALLOW_SELF_APPROVAL = process.env.ALLOW_PAYOUT_SELF_APPROVAL === '1'; // '1' lets one admin prepare and approve payouts; otherwise a second admin must approve (maker-checker)
 
 export const MAX_BOOK_BYTES = 50 * 1024 * 1024;
 export const BOOK_TYPES = { 'application/pdf': '.pdf', 'application/epub+zip': '.epub' };

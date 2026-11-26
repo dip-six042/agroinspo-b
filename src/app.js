@@ -28,6 +28,7 @@ import { registerAds } from './routes/ads.js';
 import { registerSponsorships } from './routes/sponsorships.js';
 import { registerTeam } from './routes/team.js';
 import { createLedger } from './ledger.js';
+import { COUNTRIES, countryFromPlace } from './places.js';
 
 export const ROLES = ['enthusiast', 'farmer', 'specialist', 'business', 'admin'];
 export const SELF_SERVE_ROLES = ['enthusiast', 'farmer', 'specialist', 'business'];
@@ -108,6 +109,7 @@ function meView(u) {
     role: u.role,
     title: u.title,
     location: u.location,
+    country: u.country || '',
     bio: u.bio,
     avatarUrl: u.avatar_url,
     interests: parseJson(u.interests, []),
@@ -130,6 +132,7 @@ function publicView(u, viewer) {
     title: u.title,
     avatarUrl: u.avatar_url,
     location: self || privacy.showLocation ? u.location : '',
+    country: self || privacy.showLocation ? (u.country || '') : '',
     bio: u.bio,
     interests: self || privacy.showActivity ? parseJson(u.interests, []) : []
   };
@@ -385,7 +388,7 @@ export function createApp({ db, mailer, payments, video, config = {} }) {
   /* =========================================================
      PROFILE & ONBOARDING
      ========================================================= */
-  route('GET', '/api/meta', () => ({ topics: TOPICS, goals: GOALS, roles: SELF_SERVE_ROLES, reportReasons: REPORT_REASONS }));
+  route('GET', '/api/meta', () => ({ topics: TOPICS, goals: GOALS, roles: SELF_SERVE_ROLES, reportReasons: REPORT_REASONS, countries: COUNTRIES }));
 
   route('PATCH', '/api/me', (ctx) => {
     const b = ctx.body;
@@ -394,6 +397,7 @@ export function createApp({ db, mailer, payments, video, config = {} }) {
       name: b.name !== undefined ? str(b.name, 'Name', { min: 2, max: 80 }) : u.name,
       title: b.title !== undefined ? str(b.title, 'Title', { max: 120 }) : u.title,
       location: b.location !== undefined ? str(b.location, 'Location', { max: 120 }) : u.location,
+      country: u.country || '',
       bio: b.bio !== undefined ? str(b.bio, 'Bio', { max: 1000 }) : u.bio,
       interests: listOf(b.interests, TOPICS, 'interest') ?? parseJson(u.interests, []),
       goals: listOf(b.goals, GOALS, 'goal') ?? parseJson(u.goals, []),
@@ -412,12 +416,17 @@ export function createApp({ db, mailer, payments, video, config = {} }) {
       for (const k of Object.keys(DEFAULT_NOTIF))
         if (b.notificationPrefs[k] !== undefined) next.notif[k] = !!b.notificationPrefs[k];
     }
+    if (b.country !== undefined) next.country = b.country === '' ? '' : oneOf(b.country, COUNTRIES, 'Country');
+    else if (b.location !== undefined) {
+      const guessed = countryFromPlace(next.location);
+      if (guessed) next.country = guessed;
+    }
     const onboarded = b.completeOnboarding === true ? 1 : u.onboarded;
     if (b.completeOnboarding === true && next.interests.length === 0)
       throw bad('Pick at least one interest so we can tailor your feed.');
     db.run(
-      `UPDATE users SET name=?, title=?, location=?, bio=?, interests=?, goals=?, privacy=?, notif_prefs=?, onboarded=?, updated_at=? WHERE id=?`,
-      next.name, next.title, next.location, next.bio, JSON.stringify(next.interests), JSON.stringify(next.goals),
+      `UPDATE users SET name=?, title=?, location=?, country=?, bio=?, interests=?, goals=?, privacy=?, notif_prefs=?, onboarded=?, updated_at=? WHERE id=?`,
+      next.name, next.title, next.location, next.country, next.bio, JSON.stringify(next.interests), JSON.stringify(next.goals),
       JSON.stringify(next.privacy), JSON.stringify(next.notif), onboarded, now(), u.id
     );
     if (b.completeOnboarding === true && !u.onboarded) {

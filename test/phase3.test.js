@@ -97,9 +97,9 @@ test('booking: directory, checkout, slot locking, ledger entries in pending', as
   assert.equal(b.freeCancel, true);
   assert.equal(b.commissionNgn, undefined, 'clients don’t see the commission split');
   const sb = (await spec.c('GET', `/api/bookings/${r.bookingId}`)).booking;
-  assert.deepEqual([sb.commissionNgn, sb.netNgn], [3000, 17000]);
+  assert.deepEqual([sb.commissionNgn, sb.netNgn], [2000, 18000]);
   const earn = await spec.c('GET', '/api/me/earnings');
-  assert.equal(earn.balances.pendingNgn, 17000);
+  assert.equal(earn.balances.pendingNgn, 18000);
   assert.equal(earn.balances.availableNgn, 0);
   // Another member can't see the booking.
   assert.equal((await other.c('GET', `/api/bookings/${r.bookingId}`)).status, 404);
@@ -171,7 +171,7 @@ test('disputes hold earnings until support resolves them with a partial refund',
   const t = await farmer.c('POST', '/api/support', { category: 'dispute', subjectType: 'booking', subjectId: id, title: 'Call dropped after 10 minutes', message: 'The specialist left the call after ten minutes and did not return.' });
   assert.equal(t.status, 201);
   assert.equal((await farmer.c('GET', `/api/bookings/${id}`)).booking.status, 'disputed');
-  assert.ok((await spec.c('GET', '/api/me/earnings')).balances.heldNgn >= 17000);
+  assert.ok((await spec.c('GET', '/api/me/earnings')).balances.heldNgn >= 18000);
   assert.equal((await other.c('POST', '/api/support', { category: 'dispute', subjectType: 'booking', subjectId: id, title: 'Not mine', message: 'Trying to dispute someone else’s booking here.' })).status, 400);
 
   const queue = await admin.c('GET', '/api/admin/support');
@@ -319,7 +319,7 @@ test('cancelling a paid event refunds every ticket and reverses host earnings', 
   const reg = await farmer.c('POST', `/api/events/${ev.id}/register`);
   await pay(reg.checkoutUrl);
   const pending = db.get("SELECT COALESCE(SUM(amount_ngn),0) AS n FROM ledger_entries WHERE source_type='event_ticket' AND source_id=? AND account_id=?", ev.id, spec.id).n;
-  assert.equal(pending, 2550);
+  assert.equal(pending, 2700);
   const r = await spec.c('POST', `/api/events/${ev.id}/cancel`, { reason: 'Speaker unwell' });
   assert.equal(r.refundFailures, 0);
   const net = db.get("SELECT COALESCE(SUM(amount_ngn),0) AS n FROM ledger_entries WHERE source_type='event_ticket' AND source_id=? AND account_id=?", ev.id, spec.id).n;
