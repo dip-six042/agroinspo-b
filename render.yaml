@@ -25,6 +25,13 @@ services:
         value: /var/data/agroinspo.db
       - key: UPLOAD_DIR
         value: /var/data/uploads
+      # First admin, created on start if missing. Values are entered in the Render dashboard, never committed.
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_NAME
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
       - key: ALLOW_PAYOUT_SELF_APPROVAL
         value: "1"
       - key: KORA_MODE
